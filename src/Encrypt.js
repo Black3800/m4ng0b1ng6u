@@ -6,17 +6,17 @@ class Encrypt extends Component
         {
             start: 'a',
             end: 'z',
-            enc: (c) => 97 + ((c - 95) % 26)
+            enc: (c) => 97 + ((c - 96) % 26)
         },
         {
             start: 'A',
             end: 'Z',
-            enc: (c) => 65 + ((c - 63) % 26)
+            enc: (c) => 65 + ((c - 64) % 26)
         },
         {
             start: '0',
             end: '9',
-            enc: (c) => 48 + ((c - 46) % 10)
+            enc: (c) => 48 + ((c - 47) % 10)
         },
         {
             start: ' ',
@@ -45,6 +45,7 @@ class Encrypt extends Component
             'plain': ''
         }
         this.inputRef = React.createRef()
+        this.submitRef = React.createRef()
 
         this.validateInput = this.validateInput.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -67,10 +68,14 @@ class Encrypt extends Component
         if (!this.validateInput())
         {
             this.setState({
-                'plain': 's0M3 0f mY fR13nD5 c411 m3 4nAk1N.'
+                'plain': ''
             })
             return false
         }
+        this.submitRef.current.style.backgroundColor = '#386300'
+        setTimeout(() => {
+            this.submitRef.current.style.backgroundColor = '#A66730'
+        }, 100)
         this.setState({
             'plain': this.inputRef.current.value
         })
@@ -91,20 +96,25 @@ class Encrypt extends Component
 
     render() {
         return (
-            <div>
-                <p>Your hint has been encrypted by Mango-Bingsu-Algorithm. The interface below might be helpful for you to decrypt the text.</p>
-                <form onSubmit={this.onChange}>
+            <div style={{
+                width: '100%',
+                display: 'flex',
+                flexFlow: 'column nowrap',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+            }}>
+                <form onSubmit={this.onChange} style={{width: '100%', marginBottom: '15px'}}>
                     <input
                         type='text'
                         ref={this.inputRef}
                         placeholder='Text to encrypt here'
-                        pattern="^[\w\s\.]+$"
+                        pattern='^[\w\s\.]+$'
                         onInput={this.validateInput}
+                        className='encrypt-input'
                     />
-                    <input type='submit' value='Encrypt' />
+                    <input type='submit' value='Encrypt' className='encrypt-submit' ref={this.submitRef}/>
                 </form>
-                <p>{this.encryptFunction(this.state.plain)}</p>
-                <p>(Try encrypting 'abcd 1234' and see what happens)</p>
+                <div className='code-area'>{this.encryptFunction(this.state.plain)}</div>
             </div>
         )
     }
